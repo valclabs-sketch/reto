@@ -1,1 +1,325 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Reto ValClabs</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;800&family=DM+Sans:ital,wght@0,400;0,500;1,400&display=swap');
+:root{
+  --coral:#D85A30;--coral-d:#993C1D;
+  --teal:#085041;--teal-m:#1D9E75;--teal-l:#E1F5EE;
+  --purple:#534AB7;--purple-l:#EEEDFE;
+  --amber:#FAEEDA;--amber-m:#EF9F27;
+  --dark:#2C2C2A;--mid:#888780;--off:#FAFAF7;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'DM Sans',sans-serif;background:var(--off);color:var(--dark);min-height:100vh;overflow-x:hidden}
+.screen{display:none;min-height:100vh;flex-direction:column}
+.screen.on{display:flex}
 
+/* TIPOGRAFÍA DISPLAY — Playfair para títulos grandes */
+.display{font-family:'Playfair Display',serif;font-weight:800}
+
+#s0{background:var(--teal);align-items:center;justify-content:center;padding:2.5rem 1.75rem;text-align:center;position:relative;overflow:hidden}
+#s0::before{content:'☕';position:absolute;font-size:200px;opacity:.05;bottom:-40px;right:-40px;pointer-events:none}
+.logo{font-family:'DM Sans',sans-serif;font-size:11px;font-weight:600;color:#ffffff55;letter-spacing:2.5px;text-transform:uppercase;margin-bottom:2rem}
+.intro-emoji{font-size:60px;margin-bottom:1.25rem;display:block}
+.intro-title{font-family:'Playfair Display',serif;font-size:36px;font-weight:800;color:white;line-height:1.1;margin-bottom:1rem}
+.intro-title em{color:var(--amber-m);font-style:italic}
+.intro-sub{font-size:15px;color:#ffffffaa;line-height:1.7;margin-bottom:2rem;max-width:320px}
+.intro-sub b{color:white}
+.btn-start{background:var(--coral);color:white;border:none;border-radius:30px;padding:1rem 2.5rem;font-family:'DM Sans',sans-serif;font-size:16px;font-weight:700;cursor:pointer;letter-spacing:.3px;transition:transform .15s,background .2s;box-shadow:0 4px 20px #D85A3055}
+.btn-start:hover{background:var(--coral-d);transform:scale(1.03)}
+.btn-start:active{transform:scale(.97)}
+.time-pill{display:inline-flex;align-items:center;gap:6px;background:#ffffff15;border-radius:20px;padding:5px 14px;font-size:12px;color:#ffffffbb;margin-top:1rem}
+
+#s1{background:var(--off);padding:0}
+.step-top{background:var(--teal);padding:1.5rem 1.75rem 1.25rem}
+.step-badge{display:inline-flex;align-items:center;gap:6px;background:#ffffff20;border-radius:20px;padding:4px 12px;font-size:11px;color:#ffffffcc;margin-bottom:.75rem;font-weight:500}
+.step-q{font-family:'Playfair Display',serif;font-size:26px;font-weight:700;color:white;line-height:1.2}
+.step-q em{color:var(--amber-m);font-style:italic}
+.step-body{padding:1.25rem 1.5rem;flex:1}
+
+.story-card{background:white;border-radius:18px;border:1px solid #ede9df;padding:1.1rem 1.25rem;margin-bottom:1.25rem;position:relative;overflow:hidden}
+.story-card::after{content:'';position:absolute;top:0;left:0;width:4px;height:100%;background:var(--amber-m);border-radius:4px 0 0 4px}
+.story-card p{font-size:14px;color:var(--dark);line-height:1.7;padding-left:.5rem}
+.story-card p b{color:var(--coral)}
+
+.cafe-visual{background:white;border-radius:18px;border:1px solid #ede9df;padding:1.25rem;margin-bottom:1.25rem}
+.cafe-day{display:flex;align-items:center;gap:10px;margin-bottom:10px}
+.cafe-day:last-child{margin-bottom:0}
+.cday-label{font-size:13px;color:var(--mid);min-width:62px;font-weight:500}
+.cups{display:flex;gap:3px;flex-wrap:wrap;align-items:center}
+.cup{font-size:16px;line-height:1}
+.rain{font-size:14px;margin-left:4px}
+
+.choice-label{font-size:11px;font-weight:600;color:var(--mid);text-transform:uppercase;letter-spacing:.8px;margin-bottom:.75rem}
+.choices{display:grid;gap:10px;margin-bottom:1rem}
+.choice{background:white;border:2px solid #ede9df;border-radius:16px;padding:1rem 1.1rem;cursor:pointer;font-size:14px;color:var(--dark);line-height:1.5;text-align:left;font-family:'DM Sans',sans-serif;transition:all .2s;display:flex;align-items:flex-start;gap:10px}
+.choice:hover{border-color:var(--purple);background:var(--purple-l);transform:translateX(3px)}
+.choice .cho-icon{font-size:22px;flex-shrink:0;margin-top:-2px}
+.choice .cho-text b{display:block;font-weight:600;font-size:14px;margin-bottom:2px;color:var(--dark)}
+.choice .cho-text span{font-size:13px;color:var(--mid)}
+.choice.winner{border-color:var(--teal-m);background:var(--teal-l);pointer-events:none}
+.choice.winner .cho-text b,.choice.winner .cho-text span{color:var(--teal)}
+.choice.loser{border-color:#ede9df;opacity:.4;pointer-events:none}
+
+.reveal{display:none;border-left:3px solid var(--teal-m);border-radius:0 14px 14px 0;padding:1rem 1.1rem;margin-bottom:1.25rem;font-size:14px;color:var(--teal);line-height:1.7;background:var(--teal-l)}
+.reveal b{font-weight:600}
+
+.btn-next{width:100%;background:var(--coral);color:white;border:none;border-radius:16px;padding:.9rem;font-family:'DM Sans',sans-serif;font-size:15px;font-weight:700;cursor:pointer;display:none;letter-spacing:.3px;transition:background .2s,transform .1s}
+.btn-next:hover{background:var(--coral-d)}
+.btn-next:active{transform:scale(.98)}
+
+#s2{background:var(--off);padding:0}
+.step2-top{background:var(--purple);padding:1.5rem 1.75rem 1.25rem}
+
+.ranking-area{margin-bottom:1.25rem}
+.rank-item{background:white;border:2px solid #ede9df;border-radius:14px;padding:.85rem 1rem;margin-bottom:8px;display:flex;align-items:center;gap:12px;cursor:grab;transition:all .2s;user-select:none}
+.rank-item:active{cursor:grabbing;transform:scale(1.02);box-shadow:0 6px 20px #00000015;border-color:var(--purple)}
+.rank-item.dragging{opacity:.4}
+.rank-item.drag-over{border-color:var(--teal-m);background:var(--teal-l)}
+.rank-num{width:30px;height:30px;min-width:30px;background:var(--purple-l);color:var(--purple);border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:'DM Sans',sans-serif;font-size:13px;font-weight:800}
+.rank-ico{font-size:22px}
+.rank-text{flex:1;font-size:14px;font-weight:500;color:var(--dark)}
+.rank-handle{font-size:16px;color:#ccc}
+
+.submit-rank{width:100%;background:var(--purple);color:white;border:none;border-radius:16px;padding:.9rem;font-family:'DM Sans',sans-serif;font-size:15px;font-weight:700;cursor:pointer;letter-spacing:.3px;transition:background .2s;margin-bottom:1rem}
+.submit-rank:hover{background:#3f37a0}
+
+.rank-reveal{display:none;background:var(--purple-l);border-left:3px solid var(--purple);border-radius:0 14px 14px 0;padding:1rem 1.1rem;margin-bottom:1.25rem;font-size:14px;color:var(--purple);line-height:1.7}
+.rank-reveal b{font-weight:600}
+
+#s3{background:var(--teal);align-items:center;justify-content:center;padding:2.5rem 1.75rem;text-align:center;position:relative;overflow:hidden}
+#s3::before{content:'🚀';position:absolute;font-size:180px;opacity:.05;top:-30px;left:-30px;pointer-events:none}
+.confetti-emoji{font-size:56px;margin-bottom:1rem;display:block;animation:bounce .6s ease infinite alternate}
+@keyframes bounce{from{transform:translateY(0)}to{transform:translateY(-8px)}}
+.final-title{font-family:'Playfair Display',serif;font-size:32px;font-weight:800;color:white;line-height:1.15;margin-bottom:.75rem}
+.final-title em{color:var(--amber-m);font-style:italic}
+.final-sub{font-size:15px;color:#ffffffbb;line-height:1.7;margin-bottom:1.75rem;max-width:300px}
+.final-sub b{color:white}
+
+.ig-box{background:#ffffff18;border-radius:20px;padding:1.5rem 1.25rem;margin-bottom:1.5rem;border:1px solid #ffffff22}
+.ig-step{display:flex;align-items:flex-start;gap:12px;margin-bottom:.9rem;text-align:left}
+.ig-step:last-child{margin-bottom:0}
+.ig-num{width:28px;height:28px;min-width:28px;background:var(--coral);color:white;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:'DM Sans',sans-serif;font-size:12px;font-weight:800;flex-shrink:0}
+.ig-text{font-size:13px;color:#ffffffcc;line-height:1.6;padding-top:4px}
+.ig-text b{color:white}
+
+.btn-ig{display:block;background:var(--coral);color:white;text-decoration:none;border-radius:30px;padding:1rem 2rem;font-family:'DM Sans',sans-serif;font-size:15px;font-weight:700;letter-spacing:.3px;margin-bottom:.75rem;transition:transform .15s,background .2s}
+.btn-ig:hover{background:var(--coral-d);transform:scale(1.03)}
+.restart{font-size:12px;color:#ffffff55;cursor:pointer;text-decoration:underline;background:none;border:none;font-family:'DM Sans',sans-serif}
+.restart:hover{color:#ffffff99}
+</style>
+</head>
+<body>
+
+<!-- S0: INTRO -->
+<div class="screen on" id="s0">
+  <div class="logo">ValClabs · @valclabs</div>
+  <span class="intro-emoji">🕵️</span>
+  <div class="intro-title">¿Tienes ojo<br>para los <em>datos?</em></div>
+  <p class="intro-sub">
+    Un reto de <b>2 pasos</b> para descubrir si ya piensas como analista.<br>
+    (Spoiler: casi todo el mundo puede.)
+  </p>
+  <button class="btn-start" onclick="go(1)">¡Acepto el reto! →</button>
+  <div class="time-pill">⏱ Menos de 3 minutos</div>
+</div>
+
+<!-- S1: RETO 1 -->
+<div class="screen" id="s1">
+  <div class="step-top">
+    <div class="step-badge">🔍 Reto 1 de 2</div>
+    <div class="step-q">¿Qué está<br>pasando <em>aquí?</em></div>
+  </div>
+  <div class="step-body">
+    <div class="story-card">
+      <p>Tu amiga tiene una cafetería. Esta semana sus ventas estuvieron raras. Te muestra esto y te dice: <b>"¿Tú qué ves?"</b></p>
+    </div>
+
+    <div class="cafe-visual">
+      <div class="cafe-day"><div class="cday-label">Lunes</div><div class="cups"><span class="cup">☕</span><span class="cup">☕</span><span class="cup">☕</span><span class="cup">☕</span><span class="rain">☁️</span></div></div>
+      <div class="cafe-day"><div class="cday-label">Martes</div><div class="cups"><span class="cup">☕</span><span class="cup">☕</span><span class="cup">☕</span><span class="rain">☀️</span></div></div>
+      <div class="cafe-day"><div class="cday-label">Miércoles</div><div class="cups"><span class="cup">☕</span><span class="cup">☕</span><span class="cup">☕</span><span class="cup">☕</span><span class="cup">☕</span><span class="cup">☕</span><span class="rain">🌧️</span></div></div>
+      <div class="cafe-day"><div class="cday-label">Jueves</div><div class="cups"><span class="cup">☕</span><span class="cup">☕</span><span class="cup">☕</span><span class="cup">☕</span><span class="cup">☕</span><span class="rain">🌧️</span></div></div>
+      <div class="cafe-day"><div class="cday-label">Viernes</div><div class="cups"><span class="cup">☕</span><span class="cup">☕</span><span class="cup">☕</span><span class="cup">☕</span><span class="cup">☕</span><span class="cup">☕</span><span class="cup">☕</span><span class="rain">🌧️</span></div></div>
+      <div class="cafe-day"><div class="cday-label">Sábado</div><div class="cups"><span class="cup">☕</span><span class="cup">☕</span><span class="cup">☕</span><span class="rain">☀️</span></div></div>
+      <div class="cafe-day"><div class="cday-label">Domingo</div><div class="cups"><span class="cup">☕</span><span class="cup">☕</span><span class="rain">☀️</span></div></div>
+    </div>
+
+    <div class="choice-label">Elige lo que notas 👇</div>
+    <div class="choices">
+      <button class="choice" onclick="pick1('a')">
+        <span class="cho-icon">☀️</span>
+        <div class="cho-text"><b>Los días soleados venden más</b><span>La gente sale y pasa por la cafetería</span></div>
+      </button>
+      <button class="choice" onclick="pick1('b')">
+        <span class="cho-icon">🌧️</span>
+        <div class="cho-text"><b>Los días lluviosos venden más</b><span>La gente busca algo caliente para el frío</span></div>
+      </button>
+      <button class="choice" onclick="pick1('c')">
+        <span class="cho-icon">🤷</span>
+        <div class="cho-text"><b>No veo ninguna diferencia</b><span>Los números se ven muy similares</span></div>
+      </button>
+    </div>
+    <div class="reveal" id="rev1"></div>
+    <button class="btn-next" id="bn1" onclick="go(2)">Reto 2 — el más divertido 🎯</button>
+  </div>
+</div>
+
+<!-- S2: RETO 2 -->
+<div class="screen" id="s2">
+  <div class="step-top step2-top">
+    <div class="step-badge">🎯 Reto 2 de 2</div>
+    <div class="step-q">¿Qué le<br><em>aconsejarías?</em></div>
+  </div>
+  <div class="step-body">
+    <div class="story-card">
+      <p>Tu amiga quiere ganar más. Ya sabes que lluvia = más cafés. Ordena estas ideas <b>de la mejor a la peor</b> según lo que encontraste. Arrastra y suelta 👇</p>
+    </div>
+
+    <div class="ranking-area" id="rankList">
+      <div class="rank-item" draggable="true" data-id="promo">
+        <div class="rank-num" id="rn-promo">?</div>
+        <div class="rank-ico">🎁</div>
+        <div class="rank-text">Promo "2x1 cuando llueve"</div>
+        <div class="rank-handle">⠿</div>
+      </div>
+      <div class="rank-item" draggable="true" data-id="sabado">
+        <div class="rank-num" id="rn-sabado">?</div>
+        <div class="rank-ico">📅</div>
+        <div class="rank-text">Abrir solo los sábados</div>
+        <div class="rank-handle">⠿</div>
+      </div>
+      <div class="rank-item" draggable="true" data-id="stories">
+        <div class="rank-num" id="rn-stories">?</div>
+        <div class="rank-ico">📱</div>
+        <div class="rank-text">Publicar stories cuando llueve: "Hoy hay café caliente"</div>
+        <div class="rank-handle">⠿</div>
+      </div>
+    </div>
+
+    <button class="submit-rank" onclick="submitRank()">¡Así lo ordenaría yo! →</button>
+    <div class="rank-reveal" id="revRank"></div>
+    <button class="btn-next" id="bn2" onclick="go(3)">Ver mi resultado 🎉</button>
+  </div>
+</div>
+
+<!-- S3: FINAL -->
+<div class="screen" id="s3">
+  <div class="logo" style="color:#ffffff44">ValClabs · @valclabs</div>
+  <span class="confetti-emoji">🎉</span>
+  <div class="final-title">¡Lo tienes!<br>Piensas como <em>analista.</em></div>
+  <p class="final-sub">Miraste los datos, encontraste algo y tomaste una decisión. <b>Eso es exactamente lo que hacen los analistas todos los días.</b></p>
+
+  <div class="ig-box">
+    <div class="ig-step">
+      <div class="ig-num">1</div>
+      <div class="ig-text">Toma captura de pantalla a este resultado 📸</div>
+    </div>
+    <div class="ig-step">
+      <div class="ig-num">2</div>
+      <div class="ig-text">Súbela a tu historia de Instagram</div>
+    </div>
+    <div class="ig-step">
+      <div class="ig-num">3</div>
+      <div class="ig-text">Etiqueta a <b>@valclabs</b> y escribe: <b>"lo hice"</b> — te cuento el siguiente paso de tu ruta 🚀</div>
+    </div>
+  </div>
+
+  <a class="btn-ig" href="https://www.instagram.com/valclabs" target="_blank">Ir a etiquetar a @valclabs →</a>
+  <button class="restart" onclick="restart()">Volver a intentarlo</button>
+</div>
+
+<script>
+function go(n){
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('on'));
+  document.getElementById('s'+n).classList.add('on');
+  window.scrollTo(0,0);
+}
+
+function pick1(opt){
+  const choices=document.querySelectorAll('#s1 .choice');
+  choices.forEach(c=>c.style.pointerEvents='none');
+  const rev=document.getElementById('rev1');
+  const bn=document.getElementById('bn1');
+  if(opt==='b'){
+    choices[1].classList.add('winner');choices[0].classList.add('loser');choices[2].classList.add('loser');
+    rev.innerHTML=`<b>¡Exacto! 🎉</b> Los días lluviosos tienen más tacitas. Cuando hace frío, la gente quiere algo caliente — y los datos lo muestran clarísimo. Acabas de encontrar tu primer <b>insight</b> (así le llaman en el mundo de datos a ese "aha" que acabas de tener).`;
+    rev.style.cssText='display:block;background:var(--teal-l);border-left:3px solid var(--teal-m);color:var(--teal)';
+  } else if(opt==='a'){
+    choices[0].classList.add('winner');choices[1].classList.add('loser');choices[2].classList.add('loser');
+    rev.innerHTML=`Casi — mira de nuevo los emojis de clima. Los días con más ☕ son miércoles, jueves y viernes. ¿Qué clima tienen? Exacto: lluvia 🌧️. ¡Igual lo encontraste y ya estás pensando como analista!`;
+    rev.style.cssText='display:block;background:var(--amber);border-left:3px solid var(--amber-m);color:#5a3e00';
+  } else {
+    choices[2].classList.add('winner');choices[0].classList.add('loser');choices[1].classList.add('loser');
+    rev.innerHTML=`¡Hay algo ahí! Fíjate en los días con más ☕ — miércoles, jueves y viernes todos tienen 🌧️. Los soleados tienen menos. Un analista sigue mirando hasta encontrarlo. ¡Ya lo hiciste!`;
+    rev.style.cssText='display:block;background:var(--amber);border-left:3px solid var(--amber-m);color:#5a3e00';
+  }
+  bn.style.display='block';
+}
+
+let dragged=null;
+const list=document.getElementById('rankList');
+list.addEventListener('dragstart',e=>{dragged=e.target.closest('.rank-item');setTimeout(()=>dragged.classList.add('dragging'),0)});
+list.addEventListener('dragend',e=>{e.target.closest('.rank-item').classList.remove('dragging');updateNums()});
+list.addEventListener('dragover',e=>{
+  e.preventDefault();
+  const over=e.target.closest('.rank-item');
+  if(over&&over!==dragged){
+    list.querySelectorAll('.rank-item').forEach(i=>i.classList.remove('drag-over'));
+    over.classList.add('drag-over');
+    const items=[...list.querySelectorAll('.rank-item')];
+    if(items.indexOf(dragged)<items.indexOf(over))over.after(dragged);else over.before(dragged);
+  }
+});
+list.addEventListener('dragleave',e=>{const o=e.target.closest('.rank-item');if(o)o.classList.remove('drag-over')});
+list.addEventListener('drop',e=>{e.preventDefault();list.querySelectorAll('.rank-item').forEach(i=>i.classList.remove('drag-over'))});
+
+let ti=null;
+list.addEventListener('touchstart',e=>{ti=e.target.closest('.rank-item');if(ti)ti.classList.add('dragging')},{passive:true});
+list.addEventListener('touchmove',e=>{
+  if(!ti)return;e.preventDefault();
+  const y=e.touches[0].clientY;
+  [...list.querySelectorAll('.rank-item:not(.dragging)')].forEach(item=>{
+    const r=item.getBoundingClientRect();
+    if(y>r.top&&y<r.bottom){if(y<r.top+r.height/2)item.before(ti);else item.after(ti);}
+  });
+},{passive:false});
+list.addEventListener('touchend',()=>{if(ti)ti.classList.remove('dragging');ti=null;updateNums()},{passive:true});
+
+function updateNums(){
+  [...list.querySelectorAll('.rank-item')].forEach((item,i)=>{
+    document.getElementById('rn-'+item.dataset.id).textContent=i+1;
+  });
+}
+
+function submitRank(){
+  const order=[...list.querySelectorAll('.rank-item')].map(i=>i.dataset.id);
+  const msgs={
+    promo:`<b>¡Esa es la top! 🥇</b> Un "2x1 cuando llueve" activa exactamente cuando más gente quiere café. Usaste los datos para decidir cuándo hacer la promo — eso se llama <b>decisión basada en datos.</b>`,
+    stories:`<b>¡Muy buena! 🥇</b> Avisar cuando llueve es usar el dato en tiempo real. Tu amiga llega a la gente justo cuando más necesitan un café caliente. ¡Eso es inteligencia de datos aplicada!`,
+    sabado:`Abrir solo sábados iría contra los datos — los sábados son los que menos venden. Pero el hecho de que lo analizaste ya dice mucho. Los datos te salvaron de esa decisión. 😄`
+  };
+  document.getElementById('revRank').innerHTML=msgs[order[0]]||`<b>¡Interesante orden!</b> Lo importante es que usaste lo que encontraste para decidir. Eso es exactamente lo que hace un analista.`;
+  document.getElementById('revRank').style.display='block';
+  document.querySelector('.submit-rank').style.display='none';
+  document.getElementById('bn2').style.display='block';
+  updateNums();
+}
+
+function restart(){
+  [...list.querySelectorAll('.rank-item')].forEach(item=>document.getElementById('rn-'+item.dataset.id).textContent='?');
+  document.getElementById('rev1').style.display='none';
+  document.getElementById('bn1').style.display='none';
+  document.getElementById('revRank').style.display='none';
+  document.getElementById('bn2').style.display='none';
+  document.querySelector('.submit-rank').style.display='block';
+  document.querySelectorAll('.choice').forEach(c=>{c.classList.remove('winner','loser');c.style.pointerEvents='auto'});
+  go(0);
+}
+</script>
+</body>
+</html>
